@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>flexscroll</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+      *,
+      ::before,
+      ::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      [data-flexscroll] {
+        --active: 3;
+        --gap: 1rem;
+        --size: calc((100% / var(--active)) - ((var(--gap) * (var(--active) - 1)) / var(--active)));
+
+        margin-block: 2rem;
+        text-align: center;
+      }
+
+      [data-flexscroll-frame] {
+        margin-bottom: 1rem;
+      }
+
+      [data-flexscroll-viewport] {
+        gap: var(--gap);
+        margin-bottom: 1rem;
+        padding: 0 max(2rem, (100% - 48rem) / 2);
+        scroll-padding: 0 max(2rem, (100% - 48rem) / 2);
+      }
+
+      [data-flexscroll="column"] [data-flexscroll-viewport] {
+        flex-direction: column;
+        height: 20rem;
+        padding-block: 2rem;
+        scroll-padding-block: 2rem;
+      }
+
+      [data-flexscroll-item] {
+        display: grid;
+        place-items: center;
+        width: var(--size);
+        height: 20rem;
+        background: gray;
+        opacity: 0.5;
+      }
+
+      [data-flexscroll="column"] [data-flexscroll-item]  {
+        width: 100%;
+        height: var(--size);
+      }
+
+      [data-flexscroll-frame] {
+        margin-inline: max(2rem, (100% - 48rem) / 2);
+      }
+
+      [data-flexscroll-frame] [data-flexscroll-viewport] {
+        margin: 0 min(-2rem, (100vw - 48rem) / -2);
+        padding: 0 max(2rem, (100vw - 48rem) / 2);
+        scroll-padding: 0 max(2rem, (100vw - 48rem) / 2);
+      }
+
+      [data-flexscroll-item="active"] {
+        opacity: 1;
+      }
+
+      [data-flexscroll-page="active"] {
+        background: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-flexscroll>
+      <div data-flexscroll-viewport>
+        <div data-flexscroll-item><button>0</button></div>
+        <div data-flexscroll-item><button>1</button></div>
+        <div data-flexscroll-item><button>2</button></div>
+        <div data-flexscroll-item><button>3</button></div>
+        <div data-flexscroll-item><button>4</button></div>
+        <div data-flexscroll-item><button>5</button></div>
+        <div data-flexscroll-item><button>6</button></div>
+        <div data-flexscroll-item><button>7</button></div>
+      </div>
+      <button data-flexscroll-prev>-</button>
+      <button data-flexscroll-page>0</button>
+      <button data-flexscroll-page>1</button>
+      <button data-flexscroll-page>2</button>
+      <button data-flexscroll-page>3</button>
+      <button data-flexscroll-page>4</button>
+      <button data-flexscroll-page>5</button>
+      <button data-flexscroll-page>6</button>
+      <button data-flexscroll-page>7</button>
+      <button data-flexscroll-next>+</button>
+    </div>
+    <div data-flexscroll="column">
+      <div data-flexscroll-viewport>
+        <div data-flexscroll-item><button>0</button></div>
+        <div data-flexscroll-item><button>1</button></div>
+        <div data-flexscroll-item><button>2</button></div>
+        <div data-flexscroll-item><button>3</button></div>
+        <div data-flexscroll-item><button>4</button></div>
+        <div data-flexscroll-item><button>5</button></div>
+        <div data-flexscroll-item><button>6</button></div>
+        <div data-flexscroll-item><button>7</button></div>
+      </div>
+      <button data-flexscroll-prev>-</button>
+      <button data-flexscroll-page>0</button>
+      <button data-flexscroll-page>1</button>
+      <button data-flexscroll-page>2</button>
+      <button data-flexscroll-page>3</button>
+      <button data-flexscroll-page>4</button>
+      <button data-flexscroll-page>5</button>
+      <button data-flexscroll-page>6</button>
+      <button data-flexscroll-page>7</button>
+      <button data-flexscroll-next>+</button>
+    </div>
+    <div data-flexscroll>
+      <div data-flexscroll-frame>
+        <div data-flexscroll-viewport>
+          <div data-flexscroll-item><button>0</button></div>
+          <div data-flexscroll-item><button>1</button></div>
+          <div data-flexscroll-item><button>2</button></div>
+          <div data-flexscroll-item><button>3</button></div>
+          <div data-flexscroll-item><button>4</button></div>
+          <div data-flexscroll-item><button>5</button></div>
+          <div data-flexscroll-item><button>6</button></div>
+          <div data-flexscroll-item><button>7</button></div>
+        </div>
+      </div>
+      <button data-flexscroll-prev>-</button>
+      <button data-flexscroll-page>0</button>
+      <button data-flexscroll-page>1</button>
+      <button data-flexscroll-page>2</button>
+      <button data-flexscroll-page>3</button>
+      <button data-flexscroll-page>4</button>
+      <button data-flexscroll-page>5</button>
+      <button data-flexscroll-page>6</button>
+      <button data-flexscroll-page>7</button>
+      <button data-flexscroll-next>+</button>
+    </div>
+    <script type="module">
+      import flexscroll from './index';
+
+      const targets = document.querySelectorAll('[data-flexscroll]');
+
+      for (const target of targets) {
+        flexscroll(target);
+        target.addEventListener('change', (e) => {
+          // const { items, active } = e.detail;
+        });
+      }
+    </script>
+  </body>
+</html>

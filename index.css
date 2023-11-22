@@ -1,0 +1,18 @@
+[data-flexscroll-viewport] {
+  display: flex;
+  position: relative;
+  overflow: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: both mandatory;
+  scrollbar-width: none;
+}
+
+[data-flexscroll-viewport]::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+[data-flexscroll-item] {
+  flex-shrink: 0;
+  scroll-snap-align: center;
+}
