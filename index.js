@@ -117,14 +117,14 @@ export default (root) => {
       max = viewport.scrollHeight - viewport.clientHeight;
     }
 
-    return Math.round(current / max * 100) / 100;
+    return max === 0 ? -1 : Math.round(current / max * 100) / 100;
   };
 
   const setDisabled = () => {
     const progress = getProgress();
 
-    prev?.toggleAttribute('disabled', progress === 0);
-    next?.toggleAttribute('disabled', progress === 1);
+    prev?.toggleAttribute('disabled', progress === 0 || progress === -1);
+    next?.toggleAttribute('disabled', progress === 1 || progress === -1);
   };
 
   const setScroll = (index) => {
@@ -156,6 +156,8 @@ export default (root) => {
         target.setAttribute('data-flexscroll-item', '');
         pages[index]?.setAttribute('data-flexscroll-page', '');
       }
+
+      setDisabled();
 
       active = [...new Set(active)].sort((a, b) => a - b);
 
