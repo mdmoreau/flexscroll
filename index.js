@@ -8,98 +8,60 @@ export default (root) => {
 
   let active = [];
 
-  const getAlignment = () => {
-    return getComputedStyle(items[0]).getPropertyValue('scroll-snap-align');
-  };
+  const getIndex = (type) => {
+    const min = 0;
+    const max = items.length - 1;
 
-  const getCenter = () => {
-    const direction = getDirection();
-    const style = getComputedStyle(viewport);
-    const rtl = direction === 'row' && style.getPropertyValue('direction') === 'rtl';
-
-    let current, start, end, offset, target;
-
-    if (direction === 'row') {
-      current = viewport.scrollLeft;
-      start = parseInt(style.getPropertyValue('scroll-padding-inline-start'), 10) || 0;
-      end = parseInt(style.getPropertyValue('scroll-padding-inline-end'), 10) || 0;
-      offset = (viewport.offsetWidth - start - end) / 2;
+    if (type === 'prev') {
+      const target = active[0] - 1;
+      return target >= min ? target : min;
     }
 
-    if (direction === 'column') {
-      current = viewport.scrollTop;
-      start = parseInt(style.getPropertyValue('scroll-padding-block-start'), 10) || 0;
-      end = parseInt(style.getPropertyValue('scroll-padding-block-end'), 10) || 0;
-      offset = (viewport.offsetHeight - start - end) / 2;
+    if (type === 'next') {
+      const target = active[active.length - 1] + 1;
+      return target <= max ? target : max;
     }
-
-    target = current + (rtl ? end : start) + offset;
-
-    return getClosest(target);
-  };
-
-  const getClosest = (target) => {
-    const direction = getDirection();
-
-    const proximities = active.map((index) => {
-      const item = items[index];
-
-      let center, proximity;
-
-      if (direction === 'row') {
-        center = item.offsetLeft + item.offsetWidth / 2;
-      }
-
-      if (direction === 'column') {
-        center = item.offsetTop + item.offsetHeight / 2;
-      }
-
-      proximity = Math.abs(center - target);
-
-      return { index, proximity };
-    });
-
-    return proximities.sort((a, b) => a.proximity - b.proximity)[0]?.index;
   };
 
   const getDirection = () => {
     return getComputedStyle(viewport).getPropertyValue('flex-direction');
   };
 
-  const getIndex = () => {
-    const alignment = getAlignment();
-
-    if (alignment === 'start') return active[0];
-    if (alignment === 'end') return active[active.length - 1];
-    if (alignment === 'center') return getCenter();
-  };
-
-  const getPosition = (index) => {
-    const alignment = getAlignment();
+  const getPositions = (index) => {
     const direction = getDirection();
     const item = items[index];
-    const style = getComputedStyle(viewport);
-    const rtl = direction === 'row' && style.getPropertyValue('direction') === 'rtl';
+    const styles = getComputedStyle(viewport);
+    const rtl = direction === 'row' && styles.getPropertyValue('direction') === 'rtl';
 
     let target, offset, start, end;
 
     if (direction === 'row') {
       target = item.offsetLeft;
-      start = parseInt(style.getPropertyValue('scroll-padding-inline-start'), 10) || 0;
-      end = parseInt(style.getPropertyValue('scroll-padding-inline-end'), 10) || 0;
+      start = parseInt(styles.getPropertyValue('scroll-padding-inline-start'), 10) || 0;
+      end = parseInt(styles.getPropertyValue('scroll-padding-inline-end'), 10) || 0;
       offset = viewport.offsetWidth - item.offsetWidth + (rtl ? end - start : start - end);
     }
 
     if (direction === 'column') {
       target = item.offsetTop;
-      start = parseInt(style.getPropertyValue('scroll-padding-block-start'), 10) || 0;
-      end = parseInt(style.getPropertyValue('scroll-padding-block-end'), 10) || 0;
+      start = parseInt(styles.getPropertyValue('scroll-padding-block-start'), 10) || 0;
+      end = parseInt(styles.getPropertyValue('scroll-padding-block-end'), 10) || 0;
       offset = viewport.offsetHeight - item.offsetHeight + start - end;
     }
 
-    if (alignment === 'start') return rtl ? target + end - offset : target - start;
-    if (alignment === 'end') return rtl ? target - start : target + end - offset;
-    if (alignment === 'center') return target - offset / 2;
+    return {
+      start: rtl ? target + end - offset : target - start,
+      end: rtl ? target - start : target + end - offset,
+      center: target - offset / 2,
+    }
+  };
+
+  const getMove = () => {
+    return getComputedStyle(viewport).getPropertyValue('--flexscroll-move');
+  };
+
+  const getAlign = (index) => {
+    return getComputedStyle(items[index]).getPropertyValue('scroll-snap-align');
   };
 
   const getProgress = () => {
@@ -120,24 +82,44 @@ export default (root) => {
     return max === 0 ? -1 : Math.round(current / max * 100) / 100;
   };
 
+  const setScroll = (index, type = null) => {
+    const direction = getDirection();
+    const positions = getPositions(index);
+    const move = getMove();
+
+    let align = getAlign(index);
+
+    if (move && type === 'prev') {
+      if (move === 'one') {
+        align = 'start';
+      }
+
+      if (move === 'all') {
+        align = 'end';
+      }
+    }
+
+    if (move && type === 'next') {
+      if (move === 'one') {
+        align = 'end';
+      }
+
+      if (move === 'all') {
+        align = 'start';
+      }
+    }
+
+    const x = direction === 'row' ? positions[align] : 0;
+    const y = direction === 'column' ? positions[align] : 0;
+
+    viewport.scroll(x, y);
+  };
+
   const setDisabled = () => {
     const progress = getProgress();
 
     prev?.toggleAttribute('disabled', progress === 0 || progress === -1);
     next?.toggleAttribute('disabled', progress === 1 || progress === -1);
-  };
-
-  const setScroll = (index) => {
-    const item = items[index];
-
-    if (item) {
-      const direction = getDirection();
-      const position = getPosition(index);
-      const x = direction === 'row' ? position : 0;
-      const y = direction === 'column' ? position : 0;
-
-      viewport.scroll(x, y);
-    }
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -178,15 +160,15 @@ export default (root) => {
 
   if (prev) {
     prev.addEventListener('click', () => {
-      const index = getIndex() - 1;
-      setScroll(index);
+      const index = getIndex('prev');
+      setScroll(index, 'prev');
     });
   }
 
   if (next) {
     next.addEventListener('click', () => {
-      const index = getIndex() + 1;
-      setScroll(index);
+      const index = getIndex('next');
+      setScroll(index, 'next');
     });
   }
 

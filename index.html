@@ -39,6 +39,8 @@
       }
 
       [data-flexscroll="column"] [data-flexscroll-viewport] {
+        --flexscroll-move: one;
+
         flex-direction: column;
         height: 20rem;
         padding-block: 2rem;
@@ -67,6 +69,8 @@
       }
 
       [data-flexscroll-frame] [data-flexscroll-viewport] {
+        --flexscroll-move: all;
+
         margin-inline: calc(var(--wrap) * -1);
         padding-inline: var(--wrap);
         scroll-padding-inline: var(--wrap);
