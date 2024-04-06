@@ -1,12 +1,11 @@
 export default (root) => {
   const frame = root.querySelector('[data-flexscroll-frame]');
   const viewport = root.querySelector('[data-flexscroll-viewport]');
-  const items = root.querySelectorAll('[data-flexscroll-item]');
   const prev = root.querySelector('[data-flexscroll-prev]');
   const next = root.querySelector('[data-flexscroll-next]');
-  const pages = root.querySelectorAll('[data-flexscroll-page]');
 
   let active = [];
+  let items, pages;
 
   const getIndex = (type) => {
     const min = 0;
@@ -122,6 +121,15 @@ export default (root) => {
     next?.toggleAttribute('disabled', progress === 1 || progress === -1);
   };
 
+  const init = () => {
+    items = root.querySelectorAll('[data-flexscroll-item]');
+    pages = root.querySelectorAll('[data-flexscroll-page]');
+
+    items.forEach((item) => {
+      observer.observe(item);
+    });
+  };
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       const { target, isIntersecting } = entry;
@@ -154,10 +162,6 @@ export default (root) => {
     threshold: 1,
   });
 
-  items.forEach((item) => {
-    observer.observe(item);
-  });
-
   if (prev) {
     prev.addEventListener('click', () => {
       const index = getIndex('prev');
@@ -177,9 +181,15 @@ export default (root) => {
     setDisabled();
   }
 
-  pages.forEach((page, index) => {
-     page.addEventListener('click', () => {
-       setScroll(index);
-     });
+  root.addEventListener('click', (e) => {
+    const { target } = e;
+
+    if (target.hasAttribute('data-flexscroll-page')) {
+      const index = [...pages].indexOf(target);
+      setScroll(index);
+    }
   });
+
+  root.addEventListener('update', init);
+  init();
 };
