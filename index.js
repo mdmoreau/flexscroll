@@ -5,7 +5,7 @@ export default (root) => {
   const next = root.querySelector('[data-flexscroll-next]');
 
   let active = [];
-  let items, pages;
+  let items, gotos;
 
   const getIndex = (type) => {
     const min = 0;
@@ -123,7 +123,7 @@ export default (root) => {
 
   const init = () => {
     items = root.querySelectorAll('[data-flexscroll-item]');
-    pages = root.querySelectorAll('[data-flexscroll-page]');
+    gotos = root.querySelectorAll('[data-flexscroll-goto]');
 
     items.forEach((item) => {
       observer.observe(item);
@@ -138,11 +138,11 @@ export default (root) => {
       if (isIntersecting) {
         active.push(index);
         target.removeAttribute('inert');
-        pages[index]?.setAttribute('data-flexscroll-page', '');
+        gotos[index]?.setAttribute('data-flexscroll-goto', '');
       } else {
         active = active.filter((i) => i !== index);
         target.setAttribute('inert', '');
-        pages[index]?.setAttribute('data-flexscroll-page', 'inert');
+        gotos[index]?.setAttribute('data-flexscroll-goto', 'inert');
       }
 
       active = [...new Set(active)].sort((a, b) => a - b);
@@ -184,8 +184,8 @@ export default (root) => {
   root.addEventListener('click', (e) => {
     const { target } = e;
 
-    if (target.hasAttribute('data-flexscroll-page')) {
-      const index = [...pages].indexOf(target);
+    if (target.hasAttribute('data-flexscroll-goto')) {
+      const index = [...gotos].indexOf(target);
       setScroll(index);
     }
   });
