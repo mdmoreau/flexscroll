@@ -157,12 +157,13 @@
     <script type="module">
       import flexscroll from './index';
 
-      const targets = document.querySelectorAll('[data-flexscroll]');
+      const roots = document.querySelectorAll('[data-flexscroll]');
 
-      for (const target of targets) {
-        flexscroll(target);
-        target.addEventListener('change', (e) => {
-          // const { items, active } = e.detail;
+      for (const root of roots) {
+        flexscroll(root);
+        root.addEventListener('move', (e) => {
+          const { items, active } = e.detail;
+          // console.log(items, active);
         });
       }
     </script>

@@ -139,7 +139,7 @@ export default (root) => {
 
       active = [...new Set(active)].sort((a, b) => a - b);
 
-      root.dispatchEvent(new CustomEvent('change', {
+      root.dispatchEvent(new CustomEvent('move', {
         detail: {
           items,
           active,
