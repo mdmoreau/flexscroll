@@ -18,9 +18,10 @@
       }
 
       [data-flexscroll] {
-        --active: 3;
+        --show: 3;
         --gap: 1rem;
-        --size: calc((100% / var(--active)) - ((var(--gap) * (var(--active) - 1)) / var(--active)));
+        --size: calc((100% / var(--show)) - ((var(--gap) * (var(--show) - 1)) / var(--show)));
+        --wrap: max(2rem, (100vw - 48rem) / 2);
 
         margin-block: 2rem;
         text-align: center;
@@ -33,8 +34,8 @@
       [data-flexscroll-viewport] {
         gap: var(--gap);
         margin-bottom: 1rem;
-        padding: 0 max(2rem, (100% - 48rem) / 2);
-        scroll-padding: 0 max(2rem, (100% - 48rem) / 2);
+        padding-inline: var(--wrap);
+        scroll-padding-inline: var(--wrap);
       }
 
       [data-flexscroll="column"] [data-flexscroll-viewport] {
@@ -50,7 +51,10 @@
         width: var(--size);
         height: 20rem;
         background: gray;
-        opacity: 0.5;
+
+        &[inert] {
+          opacity: 0.5;
+        }
       }
 
       [data-flexscroll="column"] [data-flexscroll-item]  {
@@ -59,21 +63,21 @@
       }
 
       [data-flexscroll-frame] {
-        margin-inline: max(2rem, (100% - 48rem) / 2);
+        margin-inline: var(--wrap);
       }
 
       [data-flexscroll-frame] [data-flexscroll-viewport] {
-        margin: 0 min(-2rem, (100vw - 48rem) / -2);
-        padding: 0 max(2rem, (100vw - 48rem) / 2);
-        scroll-padding: 0 max(2rem, (100vw - 48rem) / 2);
+        margin-inline: calc(var(--wrap) * -1);
+        padding-inline: var(--wrap);
+        scroll-padding-inline: var(--wrap);
       }
 
-      [data-flexscroll-item="active"] {
-        opacity: 1;
-      }
-
-      [data-flexscroll-page="active"] {
+      [data-flexscroll-page] {
         background: yellow;
+
+        &[data-flexscroll-page="inert"] {
+          background: none;
+        }
       }
     </style>
   </head>

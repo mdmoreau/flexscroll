@@ -148,16 +148,12 @@ export default (root) => {
       if (isIntersecting) {
         active.push(index);
         target.removeAttribute('inert');
-        target.setAttribute('data-flexscroll-item', 'active');
-        pages[index]?.setAttribute('data-flexscroll-page', 'active');
+        pages[index]?.setAttribute('data-flexscroll-page', '');
       } else {
         active = active.filter((i) => i !== index);
         target.setAttribute('inert', '');
-        target.setAttribute('data-flexscroll-item', '');
-        pages[index]?.setAttribute('data-flexscroll-page', '');
+        pages[index]?.setAttribute('data-flexscroll-page', 'inert');
       }
-
-      setDisabled();
 
       active = [...new Set(active)].sort((a, b) => a - b);
 
@@ -167,6 +163,8 @@ export default (root) => {
           active,
         },
       }));
+
+      setDisabled();
     });
   }, {
     root: frame || viewport,
@@ -193,8 +191,8 @@ export default (root) => {
   }
 
   if (prev || next) {
-    setDisabled();
     viewport.addEventListener('scroll', setDisabled);
+    setDisabled();
   }
 
   pages.forEach((page, index) => {
