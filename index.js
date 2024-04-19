@@ -125,13 +125,13 @@ export default (root) => {
     items = root.querySelectorAll('[data-flexscroll-item]');
     gotos = root.querySelectorAll('[data-flexscroll-goto]');
 
-    items.forEach((item) => {
+    for (const item of items) {
       observer.observe(item);
-    });
+    }
   };
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
+    for (const entry of entries) {
       const { target, isIntersecting } = entry;
       const index = [...items].indexOf(target);
 
@@ -155,7 +155,7 @@ export default (root) => {
       }));
 
       setDisabled();
-    });
+    }
   }, {
     root: frame || viewport,
     rootMargin: '1px',

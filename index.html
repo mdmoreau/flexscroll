@@ -32,6 +32,7 @@
       }
 
       [data-flexscroll-viewport] {
+        height: 12rem;
         gap: var(--gap);
         margin-bottom: 1rem;
         padding-inline: var(--wrap);
@@ -42,7 +43,6 @@
         --flexscroll-move: one;
 
         flex-direction: column;
-        height: 20rem;
         padding-block: 2rem;
         scroll-padding-block: 2rem;
       }
@@ -50,18 +50,12 @@
       [data-flexscroll-item] {
         display: grid;
         place-items: center;
-        width: var(--size);
-        height: 20rem;
+        flex-basis: var(--size);
         background: gray;
 
         &[inert] {
           opacity: 0.5;
         }
-      }
-
-      [data-flexscroll="column"] [data-flexscroll-item]  {
-        width: 100%;
-        height: var(--size);
       }
 
       [data-flexscroll-frame] {

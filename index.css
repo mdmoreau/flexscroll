@@ -13,7 +13,7 @@
 }
 
 [data-flexscroll-item] {
-  flex-shrink: 0;
+  flex: 0 0 auto;
   scroll-snap-align: center;
   scroll-snap-stop: always;
 }
