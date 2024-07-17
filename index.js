@@ -55,6 +55,10 @@ export default (root) => {
     }
   };
 
+  const getLoop = () => {
+    return getComputedStyle(viewport).getPropertyValue('--flexscroll-loop');
+  };
+
   const getMove = () => {
     return getComputedStyle(viewport).getPropertyValue('--flexscroll-move');
   };
@@ -116,9 +120,21 @@ export default (root) => {
 
   const setDisabled = () => {
     const progress = getProgress();
+    const loop = getLoop();
+    const start = progress === 0 || progress === -1;
+    const end = progress === 1 || progress === -1;
 
-    prev?.toggleAttribute('disabled', progress === 0 || progress === -1);
-    next?.toggleAttribute('disabled', progress === 1 || progress === -1);
+    if (loop === 'true') {
+      prev?.removeAttribute('disabled');
+      next?.removeAttribute('disabled');
+      prev?.setAttribute('data-flexscroll-prev', start ? 'loop' : '');
+      next?.setAttribute('data-flexscroll-next', end ? 'loop' : '');
+    } else {
+      prev?.toggleAttribute('disabled', start);
+      next?.toggleAttribute('disabled', end);
+      prev?.setAttribute('data-flexscroll-prev', '');
+      next?.setAttribute('data-flexscroll-next', '');
+    }
   };
 
   const init = () => {
@@ -164,15 +180,27 @@ export default (root) => {
 
   if (prev) {
     prev.addEventListener('click', () => {
-      const index = getIndex('prev');
-      setScroll(index, 'prev');
+      const loop = prev.getAttribute('data-flexscroll-prev') === 'loop';
+
+      if (loop) {
+        setScroll(items.length - 1);
+      } else {
+        const index = getIndex('prev');
+        setScroll(index, 'prev');
+      }
     });
   }
 
   if (next) {
     next.addEventListener('click', () => {
-      const index = getIndex('next');
-      setScroll(index, 'next');
+      const loop = next.getAttribute('data-flexscroll-next') === 'loop';
+
+      if (loop) {
+        setScroll(0);
+      } else {
+        const index = getIndex('next');
+        setScroll(index, 'next');
+      }
     });
   }
 

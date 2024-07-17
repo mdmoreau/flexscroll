@@ -40,7 +40,7 @@
       }
 
       [data-flexscroll="column"] [data-flexscroll-viewport] {
-        --flexscroll-move: one;
+        --flexscroll-move: all;
 
         flex-direction: column;
         padding-block: 2rem;
@@ -63,7 +63,8 @@
       }
 
       [data-flexscroll-frame] [data-flexscroll-viewport] {
-        --flexscroll-move: all;
+        --flexscroll-loop: true;
+        --flexscroll-move: one;
 
         margin-inline: calc(var(--wrap) * -1);
         padding-inline: var(--wrap);
