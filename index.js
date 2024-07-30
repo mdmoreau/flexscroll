@@ -13,12 +13,12 @@ export default (root) => {
 
     if (type === 'prev') {
       const target = active[0] - 1;
-      return target >= min ? target : min;
+      return Number.isInteger(target) ? (target >= min ? target : min) : false;
     }
 
     if (type === 'next') {
       const target = active[active.length - 1] + 1;
-      return target <= max ? target : max;
+      return Number.isInteger(target) ? (target <= max ? target : max) : false;
     }
   };
 
@@ -186,7 +186,7 @@ export default (root) => {
         setScroll(items.length - 1);
       } else {
         const index = getIndex('prev');
-        setScroll(index, 'prev');
+        Number.isInteger(index) && setScroll(index, 'prev');
       }
     });
   }
@@ -199,7 +199,7 @@ export default (root) => {
         setScroll(0);
       } else {
         const index = getIndex('next');
-        setScroll(index, 'next');
+        Number.isInteger(index) && setScroll(index, 'next');
       }
     });
   }
