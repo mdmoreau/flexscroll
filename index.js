@@ -7,23 +7,36 @@ export default (root) => {
   let active = [];
   let items, gotos;
 
+  const getLoop = () => {
+    return getComputedStyle(viewport).getPropertyValue('--flexscroll-loop');
+  };
+
+  const getMove = () => {
+    return getComputedStyle(viewport).getPropertyValue('--flexscroll-move');
+  };
+
+  const getDirection = () => {
+    return getComputedStyle(viewport).getPropertyValue('flex-direction');
+  };
+
+  const getAlign = (index) => {
+    return getComputedStyle(items[index]).getPropertyValue('scroll-snap-align');
+  };
+
   const getIndex = (type) => {
+    const loop = getLoop();
     const min = 0;
     const max = items.length - 1;
 
     if (type === 'prev') {
       const target = active[0] - 1;
-      return Number.isInteger(target) ? (target >= min ? target : min) : false;
+      return Number.isInteger(target) ? (target >= min ? target : (loop ? items.length - 1 : min)) : false;
     }
 
     if (type === 'next') {
       const target = active[active.length - 1] + 1;
-      return Number.isInteger(target) ? (target <= max ? target : max) : false;
+      return Number.isInteger(target) ? (target <= max ? target : (loop ? 0 : max)) : false;
     }
-  };
-
-  const getDirection = () => {
-    return getComputedStyle(viewport).getPropertyValue('flex-direction');
   };
 
   const getPositions = (index) => {
@@ -55,18 +68,6 @@ export default (root) => {
     }
   };
 
-  const getLoop = () => {
-    return getComputedStyle(viewport).getPropertyValue('--flexscroll-loop');
-  };
-
-  const getMove = () => {
-    return getComputedStyle(viewport).getPropertyValue('--flexscroll-move');
-  };
-
-  const getAlign = (index) => {
-    return getComputedStyle(items[index]).getPropertyValue('scroll-snap-align');
-  };
-
   const getProgress = () => {
     const direction = getDirection();
 
@@ -86,9 +87,9 @@ export default (root) => {
   };
 
   const setScroll = (index, type = null) => {
+    const move = getMove();
     const direction = getDirection();
     const positions = getPositions(index);
-    const move = getMove();
 
     let align = getAlign(index);
 
@@ -119,22 +120,13 @@ export default (root) => {
   };
 
   const setDisabled = () => {
-    const progress = getProgress();
     const loop = getLoop();
+    const progress = getProgress();
     const start = progress === 0 || progress === -1;
     const end = progress === 1 || progress === -1;
 
-    if (loop === 'true') {
-      prev?.removeAttribute('disabled');
-      next?.removeAttribute('disabled');
-      prev?.setAttribute('data-flexscroll-prev', start ? 'loop' : '');
-      next?.setAttribute('data-flexscroll-next', end ? 'loop' : '');
-    } else {
-      prev?.toggleAttribute('disabled', start);
-      next?.toggleAttribute('disabled', end);
-      prev?.setAttribute('data-flexscroll-prev', '');
-      next?.setAttribute('data-flexscroll-next', '');
-    }
+    prev?.toggleAttribute('disabled', !loop && start);
+    next?.toggleAttribute('disabled', !loop && end);
   };
 
   const init = () => {
@@ -180,27 +172,15 @@ export default (root) => {
 
   if (prev) {
     prev.addEventListener('click', () => {
-      const loop = prev.getAttribute('data-flexscroll-prev') === 'loop';
-
-      if (loop) {
-        setScroll(items.length - 1);
-      } else {
-        const index = getIndex('prev');
-        Number.isInteger(index) && setScroll(index, 'prev');
-      }
+      const index = getIndex('prev');
+      Number.isInteger(index) && setScroll(index, 'prev');
     });
   }
 
   if (next) {
     next.addEventListener('click', () => {
-      const loop = next.getAttribute('data-flexscroll-next') === 'loop';
-
-      if (loop) {
-        setScroll(0);
-      } else {
-        const index = getIndex('next');
-        Number.isInteger(index) && setScroll(index, 'next');
-      }
+      const index = getIndex('next');
+      Number.isInteger(index) && setScroll(index, 'next');
     });
   }
 
