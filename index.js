@@ -8,7 +8,7 @@ export default (root) => {
   let items, gotos;
 
   const getLoop = () => {
-    return getComputedStyle(viewport).getPropertyValue('--flexscroll-loop');
+    return getComputedStyle(viewport).getPropertyValue('--flexscroll-loop') === 'true';
   };
 
   const getMove = () => {
@@ -30,12 +30,12 @@ export default (root) => {
 
     if (type === 'prev') {
       const target = active[0] - 1;
-      return Number.isInteger(target) ? (target >= min ? target : (loop ? items.length - 1 : min)) : false;
+      return Number.isInteger(target) ? (target >= min ? target : (loop ? items.length - 1 : false)) : false;
     }
 
     if (type === 'next') {
       const target = active[active.length - 1] + 1;
-      return Number.isInteger(target) ? (target <= max ? target : (loop ? 0 : max)) : false;
+      return Number.isInteger(target) ? (target <= max ? target : (loop ? 0 : false)) : false;
     }
   };
 
