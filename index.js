@@ -49,12 +49,12 @@ export default (root) => {
 
     if (type === 'prev') {
       const target = active[0] - 1;
-      return Number.isInteger(target) ? (target >= min ? target : (loop && progress === 0 ? items.length - 1 : min)) : false;
+      return Number.isInteger(target) ? (target >= min ? target : (loop && progress === 0 ? max : min)) : false;
     }
 
     if (type === 'next') {
       const target = active[active.length - 1] + 1;
-      return Number.isInteger(target) ? (target <= max ? target : (loop && progress === 1 ? 0 : max)) : false;
+      return Number.isInteger(target) ? (target <= max ? target : (loop && progress === 1 ? min : max)) : false;
     }
   };
 
