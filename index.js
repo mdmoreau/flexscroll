@@ -23,19 +23,38 @@ export default (root) => {
     return getComputedStyle(items[index]).getPropertyValue('scroll-snap-align');
   };
 
+  const getProgress = () => {
+    const direction = getDirection();
+
+    let current, max;
+
+    if (direction === 'row') {
+      current = Math.abs(viewport.scrollLeft);
+      max = viewport.scrollWidth - viewport.clientWidth;
+    }
+
+    if (direction === 'column') {
+      current = viewport.scrollTop;
+      max = viewport.scrollHeight - viewport.clientHeight;
+    }
+
+    return max === 0 ? -1 : Math.round(current / max * 100) / 100;
+  };
+
   const getIndex = (type) => {
     const loop = getLoop();
+    const progress = getProgress();
     const min = 0;
     const max = items.length - 1;
 
     if (type === 'prev') {
       const target = active[0] - 1;
-      return Number.isInteger(target) ? (target >= min ? target : (loop ? items.length - 1 : false)) : false;
+      return Number.isInteger(target) ? (target >= min ? target : (loop && progress === 0 ? items.length - 1 : min)) : false;
     }
 
     if (type === 'next') {
       const target = active[active.length - 1] + 1;
-      return Number.isInteger(target) ? (target <= max ? target : (loop ? 0 : false)) : false;
+      return Number.isInteger(target) ? (target <= max ? target : (loop && progress === 1 ? 0 : max)) : false;
     }
   };
 
@@ -66,24 +85,6 @@ export default (root) => {
       end: rtl ? target - start : target + end - offset,
       center: target - offset / 2,
     }
-  };
-
-  const getProgress = () => {
-    const direction = getDirection();
-
-    let current, max;
-
-    if (direction === 'row') {
-      current = Math.abs(viewport.scrollLeft);
-      max = viewport.scrollWidth - viewport.clientWidth;
-    }
-
-    if (direction === 'column') {
-      current = viewport.scrollTop;
-      max = viewport.scrollHeight - viewport.clientHeight;
-    }
-
-    return max === 0 ? -1 : Math.round(current / max * 100) / 100;
   };
 
   const setScroll = (index, type = null) => {
@@ -130,7 +131,7 @@ export default (root) => {
   };
 
   const init = () => {
-    items = root.querySelectorAll('[data-flexscroll-item]');
+    items = viewport.querySelectorAll(':scope > *');
     gotos = root.querySelectorAll('[data-flexscroll-goto]');
 
     for (const item of items) {
