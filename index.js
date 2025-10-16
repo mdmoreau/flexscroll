@@ -68,15 +68,15 @@ export default (root) => {
 
     if (direction === 'row') {
       target = item.offsetLeft;
-      start = parseInt(styles.getPropertyValue('scroll-padding-inline-start'), 10) || 0;
-      end = parseInt(styles.getPropertyValue('scroll-padding-inline-end'), 10) || 0;
+      start = parseInt(styles.getPropertyValue('scroll-padding-inline-start'), 10) - 1 || 0;
+      end = parseInt(styles.getPropertyValue('scroll-padding-inline-end'), 10) + 1 || 0;
       offset = viewport.offsetWidth - item.offsetWidth + (rtl ? end - start : start - end);
     }
 
     if (direction === 'column') {
       target = item.offsetTop;
-      start = parseInt(styles.getPropertyValue('scroll-padding-block-start'), 10) || 0;
-      end = parseInt(styles.getPropertyValue('scroll-padding-block-end'), 10) || 0;
+      start = parseInt(styles.getPropertyValue('scroll-padding-block-start'), 10) - 1 || 0;
+      end = parseInt(styles.getPropertyValue('scroll-padding-block-end'), 10) + 1 || 0;
       offset = viewport.offsetHeight - item.offsetHeight + start - end;
     }
 
@@ -168,7 +168,7 @@ export default (root) => {
   }, {
     root: frame || viewport,
     rootMargin: '1px',
-    threshold: 1,
+    threshold: 0.99,
   });
 
   if (prev) {

@@ -18,9 +18,9 @@ body {
 /* base */
 
 [data-flexscroll] {
-  --show: 3;
-  --gap: 1rem;
-  --size: calc((100% / var(--show)) - ((var(--gap) * (var(--show) - 1)) / var(--show)));
+  --flexscroll-show: 3;
+  --flexscroll-gap: 1rem;
+  --flexscroll-size: calc((100% / var(--flexscroll-show)) - ((var(--flexscroll-gap) * (var(--flexscroll-show) - 1)) / var(--flexscroll-show)));
 }
 
 [data-flexscroll-viewport] {
@@ -29,7 +29,7 @@ body {
 
   display: flex;
   position: relative;
-  gap: var(--gap);
+  gap: var(--flexscroll-gap);
   overflow: auto;
   scroll-behavior: smooth;
   scroll-snap-type: both mandatory;
@@ -40,7 +40,7 @@ body {
   }
 
   > * {
-    flex: 0 0 var(--size);
+    flex: 0 0 var(--flexscroll-size);
     scroll-snap-align: center;
     scroll-snap-stop: always;
   }
